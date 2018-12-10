@@ -68,7 +68,7 @@ services:
       - C5_ADMIN_PASSWORD=${C5_ADMIN_PASSWORD}
     working_dir: /var/www/vhosts
     volumes:
-    - ./data/logs/php:${PHP_ROOT_DIR}/logs/php-fpm:rw
+    - phplogs:${PHP_ROOT_DIR}/logs/php-fpm
     - c5app:/var/www/vhosts
     depends_on:
     - database
@@ -99,3 +99,9 @@ volumes:
       type: 'none'
       o: 'bind'
       device: ${PWD}/data/vhosts
+  phplogs:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ${PWD}/data/logs/php
