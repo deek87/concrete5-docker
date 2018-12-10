@@ -21,4 +21,8 @@ if ! [[ -d ./data/database ]]; then
     mkdir ./data/database
 fi
 
+if ! [[ -d ./data/vhosts ]]; then
+    mkdir ./data/vhosts
+fi
+
 docker-compose up -d --build
