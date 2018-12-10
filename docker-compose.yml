@@ -1,0 +1,101 @@
+version: '3.1'
+
+services:
+  web:
+    container_name: ${PROJECT_NAME}_web_con
+    build:
+      context: ./apache-c5-no-pagespeed
+      args:
+      - WEB_USER=${WEB_USER}
+      - WEB_GROUP=${WEB_GROUP}
+      - APACHE_ROOT_DIR=${HTTP_ROOT_DIR}
+      - SITE=${SITE}
+    volumes:
+    - ./data/logs/web:${HTTP_ROOT_DIR}/logs:rw
+    - c5app:/var/www/vhosts
+    ports:
+    - 8080:80
+    networks:
+      public_net:
+        ipv4_address: ${HTTP_SERVER_IP}
+    environment:
+    - APACHE_EXPOSED_PORT=${HTTP_EXPOSED_PORT}
+    - APACHE_ROOT_DIR=${HTTP_ROOT_DIR}
+    - PHP_IP=${PHP_IP}
+    - PHP_ROOT=${HTTP_EXPOSED_PORT}
+    - WEB_USER=${WEB_USER}
+    - WEB_GROUP=${WEB_GROUP}
+    - PHP_APP_DIR=/var/www/vhosts/${SITE}
+  database:
+    container_name: ${PROJECT_NAME}_db_con
+    build:
+      context: ./maria-db-c5
+      args:
+      - MYSQL_CONTAINER_USER=${MYSQL_CONTAINER_USER}
+      - MYSQL_CONTAINER_GROUP=${MYSQL_CONTAINER_GROUP}
+      - C5_DB=${C5_DB}
+      - C5_DB_USER=${C5_DB_USER}
+      - C5_DB_USER_PW=${C5_DB_USER_PW}
+      - SITE=${SITE}
+      - WEB_USER=${WEB_USER}
+      - WEB_GROUP=${WEB_GROUP}
+    volumes:
+    - ./data/logs/database:${MYSQL_LOG_DIR}:rw
+    - ./data/database:${MYSQL_DATA_DIR}:rw
+    networks:
+      public_net:
+        ipv4_address: ${DATABASE_IP}
+    environment:
+    - PHP_IP=${PHP_IP}
+    - MYSQL_CONTAINER_USER=${MYSQL_CONTAINER_USER}
+    - MYSQL_CONTAINER_GROUP=${MYSQL_CONTAINER_GROUP}
+    - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  concrete5:
+    container_name: ${PROJECT_NAME}_concrete5_con
+    build:
+      context: ./concrete5
+      args:
+      - WEB_USER=${WEB_USER}
+      - WEB_GROUP=${WEB_GROUP}
+      - PHP_ROOT_DIR=${PHP_ROOT_DIR}
+      - SITE=${SITE}
+      - C5_VERSION=8.4.3
+      - HTTP_SERVER_IP=${HTTP_SERVER_IP}
+      - C5_DB=${C5_DB}
+      - C5_DB_USER=${C5_DB_USER}
+      - C5_DB_USER_PW=${C5_DB_USER_PW}
+      - C5_ADMIN_EMAIL=${C5_ADMIN_EMAIL}
+      - C5_ADMIN_PASSWORD=${C5_ADMIN_PASSWORD}
+    working_dir: /var/www/vhosts
+    volumes:
+    - ./data/logs/php:${PHP_ROOT_DIR}/logs/php-fpm:rw
+    - c5app:/var/www/vhosts
+    depends_on:
+    - database
+    - web
+    links:
+      - database
+      - web
+    networks:
+      public_net:
+        ipv4_address: ${PHP_IP}
+    command: start-concrete5.sh
+    environment:
+    - PHP_ROOT_DIR=${PHP_ROOT_DIR}
+    - HTTP_SERVER_IP=${HTTP_SERVER_IP}
+    - HTTP_EXPOSED_PORT=${HTTP_EXPOSED_PORT}
+    - DATABASE_IP=${DATABASE_IP}
+networks:
+  public_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: ${NETWORK_SUBNET}
+volumes:
+  c5app:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ${PWD}/data/vhosts

@@ -1,0 +1,28 @@
+{
+    "name": "deek87/concrete5-docker-starter",
+    "description": "Docker Composer Based Concrete5",
+    "version": "0.0.9",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Derek Cameron",
+            "email": "derek@concrete5.co.jp"
+        }
+    ],
+    "require": {
+        "composer/installers": "^1.3",
+        "concrete5/core": "-COMPOSERC5VERSION-",
+        "vlucas/phpdotenv": "^2.4"
+    },
+    "config": {
+        "preferred-install": "dist"
+        },
+  "extra": {
+    "installer-paths": {
+      "public/concrete": ["type:concrete5-core"],
+      "public/application/themes/{$name}": ["type:concrete5-theme"],
+      "public/packages/{$name}": ["type:concrete5-package"],
+      "public/application/blocks/{$name}": ["type:concrete5-block"]
+    }
+  }
+}
