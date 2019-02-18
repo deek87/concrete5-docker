@@ -59,7 +59,7 @@ services:
       - WEB_GROUP=${WEB_GROUP}
       - PHP_ROOT_DIR=${PHP_ROOT_DIR}
       - SITE=${SITE}
-      - C5_VERSION=8.4.3
+      - C5_VERSION={C5_VERSION}
       - HTTP_SERVER_IP=${HTTP_SERVER_IP}
       - C5_DB=${C5_DB}
       - C5_DB_USER=${C5_DB_USER}
