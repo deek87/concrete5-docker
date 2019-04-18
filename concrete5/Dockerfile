@@ -13,6 +13,9 @@ ARG C5_DB_USER_PW=VQKz0rU9ThR0kGA7
 ARG C5_ADMIN_EMAIL=admin@example.com
 ARG C5_ADMIN_PASSWORD=BJe04OXN0gy7ji7U
 ARG PHP_ROOT_DIR=/usr/local/etc
+RUN apk add --no-cache tzdata
+ENV TZ=${TZ}
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 
 RUN  mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"

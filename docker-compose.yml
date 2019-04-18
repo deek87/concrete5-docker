@@ -26,6 +26,7 @@ services:
     - WEB_USER=${WEB_USER}
     - WEB_GROUP=${WEB_GROUP}
     - PHP_APP_DIR=/var/www/vhosts/${SITE}
+    - TZ=${TZ}
   database:
     container_name: ${PROJECT_NAME}_db_con
     build:
@@ -50,6 +51,7 @@ services:
     - MYSQL_CONTAINER_USER=${MYSQL_CONTAINER_USER}
     - MYSQL_CONTAINER_GROUP=${MYSQL_CONTAINER_GROUP}
     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    - TZ=${TZ}
   concrete5:
     container_name: ${PROJECT_NAME}_concrete5_con
     build:
@@ -85,6 +87,7 @@ services:
     - HTTP_SERVER_IP=${HTTP_SERVER_IP}
     - HTTP_EXPOSED_PORT=${HTTP_EXPOSED_PORT}
     - DATABASE_IP=${DATABASE_IP}
+    - TZ=${TZ}
 networks:
   public_net:
     driver: bridge

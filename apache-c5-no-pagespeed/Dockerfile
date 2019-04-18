@@ -6,6 +6,9 @@ ARG WEB_GROUP='www-data'
 ARG APACHE_ROOT_DIR='/usr/local/etc/httpd'
 ARG SITE='concrete5.local'
 ENV SITE=${SITE}
+RUN apk add --no-cache tzdata
+ENV TZ=${TZ}
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 
 COPY ./config/httpd2.conf ${APACHE_ROOT_DIR}/conf/httpd.conf

@@ -1,8 +1,10 @@
-FROM mariadb:10.1
+FROM mariadb:latest
 MAINTAINER deek87
 ARG C5_DB_USER='c5db_user'
 ARG C5_DB_USER_PW='Concr3te5pa5sw0rd'
 ARG C5_DB='concrete5db'
+ENV TZ=${TZ}
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 COPY ./docker-entrypoint-initdb.d /docker-entrypoint-initdb.d
 RUN sed -i s/\-\-C5_DB\-\-/${C5_DB}/g /docker-entrypoint-initdb.d/10-init-concrete5.sql \

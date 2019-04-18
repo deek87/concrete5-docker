@@ -23,15 +23,18 @@ _install_concrete5() {
         echo $(mysql -h "${DATABASE_IP}" -u --C5_DB_USER-- -p--C5_DB_USER_PW-- --C5_DB-- -e "$TABLE_EXISTS")
         echo "Installing Concrete 5"
         echo "mysql -h "${DATABASE_IP}" -u --C5_DB_USER-- -p--C5_DB_USER_PW-- --C5_DB-- -e '$TABLE_EXISTS'"
-        vendor/bin/concrete5 c5:install --db-database="--C5_DB--" --db-password=--C5_DB_USER_PW-- --db-server="${DATABASE_IP}" --db-username="--C5_DB_USER--" --admin-email="--C5_ADMIN_EMAIL--" --admin-password="--C5_ADMIN_PASSWORD--"
+        vendor/bin/concrete5 c5:install --db-database="--C5_DB--" --db-password=--C5_DB_USER_PW-- --db-server="${DATABASE_IP}" --db-username="--C5_DB_USER--" --admin-email="--C5_ADMIN_EMAIL--" --admin-password="--C5_ADMIN_PASSWORD--" --ignore-warnings
 
     else
         vendor/bin/concrete5
         echo "Attaching database"
-        concrete5 c5:install --attach --db-database="--C5_DB--" --db-password=--C5_DB_USER_PW-- --db-server="${DATABASE_IP}" --db-username="--C5_DB_USER--" --admin-email="--C5_ADMIN_EMAIL--" --admin-password="--C5_ADMIN_PASSWORD--" || true
+        vendor/bin/concrete5 c5:install --attach --db-database="--C5_DB--" --db-password=--C5_DB_USER_PW-- --db-server="${DATABASE_IP}" --db-username="--C5_DB_USER--" --admin-email="--C5_ADMIN_EMAIL--" --admin-password="--C5_ADMIN_PASSWORD--" --ignore-warnings || true
         echo "C5 Already Installed"
-        concrete5 c5:is-installed || true
-        concrete5 orm:generate-proxies
+        vendor/bin/concrete5 c5:is-installed || true
+        echo "C5 : Running Update incase"
+        vendor/bin/concrete5 c5:update || true
+        echo "C5 : Regenerate Proxies"
+        vendor/bin/concrete5 orm:generate-proxies
 
     fi
 
